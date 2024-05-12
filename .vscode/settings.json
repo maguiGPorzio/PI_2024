@@ -1,0 +1,15 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "random": "c",
+        "stdio.h": "c",
+        "cstddef": "c",
+        "assert.h": "c",
+        "TP6_27.C": "cpp",
+        "random.h": "c",
+        "ctype.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c",
+        "vector": "c"
+    }
+}
