@@ -15,108 +15,169 @@ Que la función se haga cero en un punto (considerando un error de EPSILON): En 
 agrega al arreglo de resultados está formada por el punto anterior al que se detectó como raíz y el próximo 
 que no lo sea.
 */
-
-
-#include <string.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include "bibliotecas/getnum.h"
-#define EPSILON 0.00001
-#define FUNCION(x) ( (2*x*x) - (4*x) )
-#define PARTICIONES 100000
-#define BLOCK 10
+#include <math.h>
+#include <errno.h>
 
-typedef double particion[2];
+/* Función a evaluar, en TP posterior verán cómo pasar como parámetro
+   una función (punteros a funciones) 
+*/
+#define FUNCION(x)	(sin(x))
+#define PASOS 		100000
+#define EPSILON 	0.000001
+#define BLOQUE		10
 
-typedef struct intervalos{
-    double extremoInf;
-    double extremoSup;
-} intervalos;
+typedef struct {
+	double a,b ;
+} tipoIntervalo;
 
-typedef struct raices{
-    particion * raices;
-    int cantRaices;
-} raices;
+typedef struct {
+	int dim;
+	tipoIntervalo * lista;
+} tipoRaices;
+			
+/* Dado un intervalo busca subintervalos con raíces */
+tipoRaices buscar_raices(tipoIntervalo);
 
+/* Almacena un intervalo en la estructura tipoRaices, de no haber espacio ejecuta realloc() */
+int almacenarRaiz(tipoRaices * resp, tipoIntervalo inter, int nuevaRaiz);
 
+/* Libera la respuesta cuando deja de ser necesaria */
+void freeRaices(tipoRaices resp);
+
+/* Realiza la lectura de los extremos del intervalo */
+void leerExtremos(tipoIntervalo *extremos);
+
+/* Función que imprime los resultados en salida estándar */
+void verResultados(tipoRaices respuesta);
 
 int
-main (){
-    intervalos extremos;
-    double paso= solicitarExtremos(&extremos);
-    mostrarExtremos(&extremos);
+main(void) {
+	int opcion;
+	tipoRaices respuesta;
+	tipoIntervalo extremos;
 
-    raices raicesFun=buscarRaices(&extremos,paso);
+	leerExtremos(&extremos);
+	respuesta = buscar_raices(extremos);
+	verResultados(respuesta);	
+	if (respuesta.dim >= 0)
+		freeRaices(respuesta);
 
-    for (int i=0 ; i<raicesFun.cantRaices ; i++){
-        printf("%f ,", raicesFun.raices[i][0]);
-        printf("%f", raicesFun.raices[i][1]);
-        puts("");
-    }
-    printf("%d\n",raicesFun.cantRaices);
+	return 0;
+}
+ 
 
-    free(raicesFun.raices);
-    return 0;
+void
+verResultados(tipoRaices respuesta) {
+	int i;
+	
+	if (respuesta.dim == -1) {	/* Corresponde a error de malloc() */
+		puts("Error en el almacenamiento de raíces");
+	} else if (respuesta.dim > 0) {
+		for (i = 0; i < respuesta.dim; i++)
+			printf("Raíz %d en [%f,%f]\n",
+ 				i+1,respuesta.lista[i].a, respuesta.lista[i].b);
+	}
+	else {
+		puts("\nNo hay raíces en ese intervalo");
+	}
 }
 
-double
-solicitarExtremos (intervalos * p){ //LISTO
-    (p->extremoInf)=getdouble("Ingrese el extremo izquierdo del intervalo: ");
-    do{ 
-        (p->extremoSup)=getdouble("Ingrese el extremo derecho del intervalo: ");
-    }
-    while ((p->extremoInf)>(p->extremoSup));
+tipoRaices
+buscar_raices(tipoIntervalo extr) {
+	double x,fx,fxant, incremento;
+	tipoRaices respuesta = {0, NULL};
+	int esRaiz = 0, error = 0;
+	tipoIntervalo intActual;
 
-    double paso = (inter->b - inter->a)/PARTICIONES;
+	incremento = (extr.b - extr.a) / PASOS ;
 
-    return paso;
+	if (incremento == 0 )
+		incremento = 0.00001;  
+
+	
+	/* Se recorre el intervalo, evaluando la función en cada punto */
+	x = extr.a;
+	fxant = fx = FUNCION(x);
+	while ( x <= extr.b && !error ) {
+		if ( fx*fxant < 0  ||  fabs(fx) < EPSILON) {
+			/* Con el flag esRaiz se controla que no se indique más de una vez la misma raíz.
+ 		    ** Si el punto anterior ya era raíz, entonces extender el intervalo
+			*/
+ 			if ( ! esRaiz ) {
+				intActual.a = x - incremento;	 
+    		}
+
+			/* Si se detectó un cambio de signo es porque hay una raíz entre el x 
+ 			** anterior y el actual por lo tanto el fin del intervalo es x.
+			** En cambio si x es raíz el extremo derecho del intervalo será el próximo x 
+	 		*/
+       		if ( fx * fxant < 0 )
+				intActual.b = x;
+ 		    else
+				intActual.b = x + incremento;
+				
+			/* Se almacena el nuevo intervalo, o actualiza uno existente */
+			if ( !almacenarRaiz(&respuesta, intActual, !esRaiz) )	
+				error = 1;	
+		
+       		esRaiz = 1;
+ 	    } else
+			esRaiz = 0;
+
+		/* Paso al próximo punto */
+		x += incremento;
+		fxant = fx; 
+
+		fx = FUNCION(x);
+
+	}
+	return respuesta;
+}
+
+
+int 
+almacenarRaiz(tipoRaices * resp, tipoIntervalo inter, int nuevaRaiz) {
+	errno=0;
+	// Si es una nueva raiz vemos si es necesario agrandar el espacio
+	if ( nuevaRaiz){
+	   if(resp->dim % BLOQUE == 0)	{
+            tipoIntervalo * aux;
+            aux = realloc(resp->lista, (resp->dim + BLOQUE)*sizeof(*aux));
+            if (aux==NULL || errno==ENOMEM) {
+			    free(resp->lista);
+			    resp->dim = -1;
+			    return 0;
+		    }
+		    resp->lista = aux;
+	   }	
+	   resp->dim++;
+	}
+
+	/* Se  almacena/actualiza  el intervalo */
+	resp->lista[resp->dim-1] = inter;
+	return 1;
 }
 
 void
-mostrarExtremos(intervalos * p){ //LISTO
-    printf("El extremo inferior es: %f\n",p->extremoInf);
-    printf("El extremo superior es: %f\n",p->extremoSup);
+freeRaices(tipoRaices resp) {
+	free(resp.lista);
 }
 
-raices
-buscarRaices (intervalos * intervalo, double paso){
-    raices raicesFuncion;
-    double valorAnterior=FUNCION(intervalo->extremoInf), valorActual;
+ 
+void 
+leerExtremos(tipoIntervalo *extremos) {
+	float a, b;
 
-    raicesFuncion.raices=NULL;
-    raicesFuncion.cantRaices=0;
-    
-    for (double i=intervalo->extremoInf ; i<=(intervalo->extremoSup) ; i+=paso){
-        
-        valorActual=FUNCION(i);
-
-        if ((raicesFuncion.cantRaices)%BLOCK==0){
-            raicesFuncion.raices=realloc(raicesFuncion.raices,((raicesFuncion.cantRaices)+BLOCK)*sizeof(raicesFuncion.raices[0]));
-        }
-    
-        if (fabs(valorActual)<EPSILON && fabs(valorAnterior)>EPSILON){
-            raicesFuncion.raices[raicesFuncion.cantRaices][0]=valorAnterior;
-        }
-        else if (fabs(valorActual)>EPSILON && fabs(valorAnterior)<EPSILON){
-            raicesFuncion.raices[(raicesFuncion.cantRaices)++][1]=valorActual;
-        }
-        else if (signo(valorActual)!=signo(valorAnterior)){
-            raicesFuncion.raices[raicesFuncion.cantRaices][0]=valorAnterior;
-            raicesFuncion.raices[(raicesFuncion.cantRaices)++][1]=valorActual;
-        }
-        
-        valorAnterior=valorActual;
-    }
-    raicesFuncion.raices=realloc(raicesFuncion.raices,raicesFuncion.cantRaices);
-    return raicesFuncion;
-}
-
-int
-signo (double valor){
-    if (valor<0){
-        return -1;
-    }
-    return 1;
+	/* leer extremos del intervalo */
+	a = 1;
+	b = 50000;
+	if (a<b) {
+		extremos->a = a;	
+ 	    extremos->b = b;
+	} else {
+		extremos->b = a; 
+ 		extremos->a = b;
+	}
 }

@@ -18,66 +18,92 @@ Radio
 Tiempo
 Relación (radio / tiempo)
 */
-#define BLOCK 10
-#include <string.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define DIRECTIONS 4
 
-// Función para generar un número aleatorio normalizado en [0,1) 
-double randNormalize(){
-    return rand () / ((double) RAND_MAX+1);
-}
+#define R_MINIMO 10
+#define R_MAXIMO 1000
 
-// Función para generar un número entero aleatorio en el rango [left, right]
-int randInt(int left, int right){
-    return ((int)(randNormalize()*(right-left+1)) + left);
-}
+typedef struct {
+    int x,y; 
+} tipoPunto;
 
-// Función para inicializar la semilla del generador de números aleatorios
-void randomize(){
-    srand ((int)time(NULL));
-}
 
-typedef struct tabla{
-    double radio;
-    int tiempo;
-    double relacion;
-} tabla;
+/* Simula el movimiento de una partícula dentro de un círculo partiendo desde un origen dado.
+** Retorna la cantidad de unidades de tiempo que tarda en salir del circulo 
+*/
+int simulacion(int radio, tipoPunto origen);
+
+/* genera un movimiento aleatorio en forma vertical u horizontal 
+** actualizando la posición de la partícula 
+*/
+void mover (tipoPunto *particula);
+
+/* devuelve 1 si la posición de la partícula esta fuera del circulo */
+int salio (tipoPunto particula, int radio);
+
 
 int
-main(){
-    double radio = 0;
-    int x=0,y=0, tiempo=1, cant=0, aleatorio;
-    tabla * valores=NULL;
-    do {
-        printf("Ingresar el radio\n");
-        scanf("%lg",&radio);
-    }
-    while (radio<0);
+main (void) {
+	unsigned long tiempo;
+	int radio;
 
-    static int directionsx[]={0,0,1,-1};
-    static int directionsy[]={1,-1,0,0};
+	srand(time(NULL));
 
-    while ((x*x)+(y*y)<radio*radio){
-        if (cant%BLOCK==0){
-            valores=realloc(valores, (cant+BLOCK)*sizeof(valores[0]));
-        }
-        aleatorio=randInt(0,DIRECTIONS-1);
-        x+=directionsx[aleatorio];
-        y+=directionsy[aleatorio];
-        valores[cant].radio=sqrt((x*x)+(y*y));
-        valores[cant].tiempo=tiempo;
-        valores[cant].relacion=((valores[cant].radio)/(valores[cant].tiempo));
-        tiempo++;
-        cant++;
-    }
-    valores=realloc(valores, cant);
-    printf("RADIO - TIEMPO - RELACION\n");
-    for (int i=0 ; i<cant ; i++){
-        printf("%f - %6d - %10f\n", valores[i].radio, valores[i].tiempo, valores[i].relacion);
-    }
-    free(valores);
+	printf("\n\nSimulacion del movimiento de una particula\n");
+	printf ("\n%10s%10s%10s\n","Radio","Tiempo","T/R");
+	printf ("----------------------------------\n");
+
+	tipoPunto orig = {0,0};
+	for (radio = R_MINIMO; radio < R_MAXIMO; radio+= (R_MAXIMO-R_MINIMO)/10) {
+		tiempo = simulacion( radio, orig);
+		printf ("%10d%10lu%10.2f\n",radio,tiempo,(float)tiempo/radio);
+	}
+
+	printf("\n\n");
+
+	return 0;
+}
+
+// No recibimos un puntero a tipoPunto porque es un struct con solo dos int
+int 
+simulacion(int radio, tipoPunto origen) {
+	unsigned long tiempo;
+
+	tiempo = 0;
+	do {
+		tiempo++;
+		mover ( &origen );
+	} while (!salio(origen, radio));
+
+	return tiempo;
+}
+
+ 
+void
+mover(tipoPunto *particula) {
+	int i;
+	i = rand() % 4;
+	switch (i)
+	{
+		case 0: particula->x--; break;
+	    case 1: particula->y--; break;
+		case 2: particula->x++; break;
+	    case 3: particula->y++; break;
+	}
+	/* Otra forma de hacerlo seria :
+	*	static int movim[][2] = {{0,1},{1,0},{0,-1},{-1,0}};
+	*
+	* 	i= randInt(0, sizeof(movim)/sizeof(movim[0]));
+	*
+	*	particula->x += movim[i][0];
+	*	particula->y += movim[i][1];
+	*/
+}
+
+// TODO: hacer una macro y no una función
+int 
+salio (tipoPunto particula, int radio) {
+	return ( (particula.x * particula.x + particula.y * particula.y) > radio * radio );
 }

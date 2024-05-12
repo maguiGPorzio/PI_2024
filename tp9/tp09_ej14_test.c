@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-//hacer 
-
 int apareados(const char *texto);
 
 int main(void) {
