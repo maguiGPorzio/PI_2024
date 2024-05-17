@@ -11,7 +11,7 @@ La segunda lista no debe ser modificada.
 #include <assert.h>
 #include "/home/mgonzalezporzio/PI/tp10/utillist.h"
  
-TList concatenarLista(TList, const TList);
+TList concatenarLista(TList list1, const TList list2);
  
 int
 main(void) {
@@ -37,4 +37,14 @@ main(void) {
 }
 
 TList 
-concatenarLista(TList, const TList){}
+concatenarLista(TList list1, const TList list2){
+    if (list2==NULL){
+        return NULL;
+    }
+
+    if (list1==NULL){
+        
+    }
+
+    list1->tail=concatenarLista(list1->tail,list2->tail);
+}
