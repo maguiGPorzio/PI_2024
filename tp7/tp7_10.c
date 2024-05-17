@@ -127,5 +127,4 @@ main (){
     printf("La palabra era %s \n", palabraElegida);
 
     return 0;
-
 }
