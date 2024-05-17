@@ -68,16 +68,31 @@ comprimeList(const TList list){
     return NULL;
   }
 
-  if (list->tail == NULL || list->elem != (list->tail)->elem){
+  if (list->tail == NULL || list->elem != list->tail->elem){
     TListBrief aux=malloc(sizeof(TNodeBrief));
     aux->tail=comprimeList(list->tail);
     aux->elem=list->elem;
     aux->count=1;
     return aux;
   }
-  
   TListBrief aux=comprimeList(list->tail);
   aux->count+=1;
   return aux;
+}
+
+/*
+TListBrief comprimeList(const TList list) {
+  if (list == NULL) {
+    return NULL;
+  }
+
+  TListBrief aux = comprimeList(list->tail);
+  if(aux == NULL || aux->elem != list->elem) {
+    // creo el nodo
+  } else {
+    aux->count++;
+  }
+  return aux;
 
 }
+*/

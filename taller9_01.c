@@ -39,12 +39,17 @@ main(void) {
 TList 
 concatenarLista(TList list1, const TList list2){
     if (list2==NULL){
-        return NULL;
+        return list1;
     }
 
     if (list1==NULL){
-        
+        TList aux=malloc(sizeof(TNode));
+        aux->tail=concatenarLista(list1,list2->tail);
+        aux->elem=list2->elem;
+        return aux;
     }
 
-    list1->tail=concatenarLista(list1->tail,list2->tail);
+    list1->tail=concatenarLista(list1->tail,list2);
+
+    return list1;
 }
