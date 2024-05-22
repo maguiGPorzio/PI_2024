@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "/home/mgonzalezporzio/PI/tp10/utillist.h"
+#include "/home/mgonzalezporzio/PI/tp11/utillist.h"
 
 /*
 ** Funcion auxiliar para crear listas y poder testear las funciones

@@ -11,6 +11,7 @@
         "stdlib.h": "c",
         "string.h": "c",
         "vector": "c",
-        "utillist.h": "c"
+        "utillist.h": "c",
+        "tp11_ej05.h": "c"
     }
 }

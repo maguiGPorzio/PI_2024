@@ -1,26 +1,8 @@
-/*
-Escribir un programa para hallar las raíces de una función matemática en un intervalo cerrado, recorriéndolo 
-de forma tal que el intervalo quede dividido en 100000 (cien mil) particiones o subintervalos. Ejemplo: 
-si el intervalo es [1, 50000] deberá evaluar la función en los puntos 1, 1.5, 2, etc. (también se tomarán 
-como válidos los puntos 1, 1.49999, etc ).
-El programa deberá solicitar los extremos del intervalo, imprimiendo los resultados en la salida estándar. 
-La función a evaluar recibe y devuelve un valor real y está dada por la macro FUNCION.
-La función que realice la búsqueda de las raíces debe recibir como parámetros una estructura que represente 
-al intervalo,  regresando en su nombre una estructura que empaquete un arreglo con aquellas particiones donde 
-haya raíces y la dimensión de dicho arreglo.
-Para detectar una raíz se deben considerar dos casos:
-Que la función cambie de signo entre dos puntos: En ese caso se agrega al arreglo una partición con ambos 
-puntos.
-Que la función se haga cero en un punto (considerando un error de EPSILON): En ese caso la partición que se 
-agrega al arreglo de resultados está formada por el punto anterior al que se detectó como raíz y el próximo 
-que no lo sea.
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
 
-#define FUNCION(x)	(sin(x))
 #define PASOS 		100000
 #define EPSILON 	0.000001
 #define BLOQUE		10
@@ -34,7 +16,10 @@ typedef struct {
 	tipoIntervalo * lista;
 } tipoRaices;
 
-tipoRaices buscar_raices(tipoIntervalo);
+//arrFun es un arreglo de punteros a funciones que toman un double y devuelven un double
+typedef double (*fnDouble)(double);
+
+tipoRaices buscar_raices(tipoIntervalo,fnDouble fun);
 int almacenarRaiz(tipoRaices * resp, tipoIntervalo inter, int nuevaRaiz);
 void freeRaices(tipoRaices resp);
 void leerExtremos(tipoIntervalo *extremos);
@@ -42,12 +27,13 @@ void verResultados(tipoRaices respuesta);
 
 int
 main(void) {
-	int opcion;
+    fnDouble arrFun[] = {sin, cos, log};
+
 	tipoRaices respuesta;
 	tipoIntervalo extremos;
 
 	leerExtremos(&extremos);
-	respuesta = buscar_raices(extremos);
+	respuesta = buscar_raices(extremos,arrFun[0]);
 	verResultados(respuesta);	
 	if (respuesta.dim >= 0)
 		freeRaices(respuesta);
@@ -73,7 +59,7 @@ verResultados(tipoRaices respuesta) {
 }
 
 tipoRaices
-buscar_raices(tipoIntervalo extr) {
+buscar_raices(tipoIntervalo extr, fnDouble fun) {
 	double x, fx, fxant, incremento;
 	tipoRaices respuesta = {0, NULL};
 	int esRaiz = 0, error = 0;
@@ -87,7 +73,7 @@ buscar_raices(tipoIntervalo extr) {
 	
 	/* Se recorre el intervalo, evaluando la función en cada punto */
 	x = extr.a;
-	fxant = fx = FUNCION(x);
+	fxant = fx = fun(x);
 	while ( x <= extr.b && !error ) {
 		if ( fx*fxant < 0  ||  fabs(fx) < EPSILON) {
 			/* Con el flag esRaiz se controla que no se indique más de una vez la misma raíz.
@@ -119,7 +105,7 @@ buscar_raices(tipoIntervalo extr) {
 		
 		fxant = fx; 
 
-		fx = FUNCION(x);
+		fx = fun(x);
 
 	}
 	return respuesta;
@@ -170,3 +156,4 @@ leerExtremos(tipoIntervalo *extremos) {
  		extremos->a = b;
 	}
 }
+
