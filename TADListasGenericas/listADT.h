@@ -7,7 +7,7 @@
 
 typedef struct listCDT * listADT;
 
-typedef char * elemType;
+typedef char * elemType; // char * porque son strings
 
 // función para poder comparar dos elementos
 // retorna
@@ -37,5 +37,9 @@ int insertList(listADT list, elemType elem);
 int deleteList(listADT list, elemType elem);
 
 int sizeList(const listADT list);
+
+elemType buscar (const listADT list, int indice);
+
+void map(const listADT list, elemType (*funcion) (elemType));
 
 #endif //UNTITLED6_LISTADT_H

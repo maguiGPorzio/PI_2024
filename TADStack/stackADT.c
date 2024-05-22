@@ -2,7 +2,7 @@
 // Created  on 20/05/2024.
 //
 
-#include "stackADT.h"
+#include "/home/mgonzalezporzio/PI/TADStack/stackADT.h"
 #include <stdlib.h>
 #define BLOCK 10
 

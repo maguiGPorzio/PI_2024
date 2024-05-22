@@ -2,7 +2,7 @@
 
 #define __SETADTH_
 
-#include "listADT.h"		// incluye elemType (usamos la versión que recibe la función de comparación)
+#include "/home/mgonzalezporzio/PI/TADListasGenericas/listADT.h"		// incluye elemType (usamos la versión que recibe la función de comparación)
 
 typedef struct setCDT * setADT;
 

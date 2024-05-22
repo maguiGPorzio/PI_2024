@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "tp11_ej08.h" 
+#include "/home/mgonzalezporzio/PI/tp11/tp11_ej08.h" 
 
 /* Utilizamos char * como elemType y strcmp como compare */
 int main(void) {
-	setADT set1 = newSet(strcmp);
-	setADT set2 = newSet(strcmp);
+	setADT set1 = newSet((int (*) (char *, char*))strcmp);
+	setADT set2 = newSet((int (*) (char *, char*))strcmp);
 	setADT ans;
 	int ok;
 	ok = addElement( set1, "amelia" );
@@ -40,8 +40,8 @@ int main(void) {
 	freeSet(ans);
 	
 	// test con conjuntos de un elemento
-	set1 = newSet(strcmp);
-	set2 = newSet(strcmp);
+	set1 = newSet((int (*) (char *, char*)) strcmp);
+	set2 = newSet((int (*) (char *, char*)) strcmp);
 	ok = addElement( set1, "amelia" );
 	ok = addElement( set2, "amelia" );
 	ans = intersectionSet( set1, set2 );
@@ -50,13 +50,13 @@ int main(void) {
 	freeSet(ans);
 	
 	ans = unionSet( set1, set2 );
-	assert( setContains(ans, "amelia") == 1 );
+	assert(setContains(ans, "amelia") == 1);
 	assert(sizeSet(ans)==1);
 	freeSet(ans);
 
     // Diferencia de un conjunto con un solo elemento
 	freeSet(set2);
-	set2 = newSet(strcmp);
+	set2 = newSet((int (*) (char *, char*)) strcmp);
 	ans = diffSet( set1, set2 );
 	assert(sizeSet(ans)==1);
 

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "listADT.h"
+#include "/home/mgonzalezporzio/PI/TADListasGenericas/listADT.h"
 #include <strings.h>
 #include <assert.h>
 
@@ -17,7 +17,11 @@ int main(void) {
     assert(insertList(myList, "hola y adios")==1);
     assert(sizeList(myList)==2);
 
+    //assert(deleteList(myList,"hola"));
+    //assert(sizeList(myList)==1);
     //assert(deleteList(myList, "no estoy")==0);
+
+    //assert(strcasecmp(buscar(myList,0),"hola")==0);
 
     freeList(myList);
 

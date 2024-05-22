@@ -12,6 +12,10 @@
         "string.h": "c",
         "vector": "c",
         "utillist.h": "c",
-        "tp11_ej05.h": "c"
+        "tp11_ej05.h": "c",
+        "listadt.h": "c",
+        "stackadt.h": "c",
+        "strings.h": "c",
+        "tp11_ej08.h": "c"
     }
 }

@@ -3,7 +3,7 @@
 //
 
 #include <stdlib.h>
-#include "listADT.h"
+#include "/home/mgonzalezporzio/PI/TADListasGenericas/listADT.h"
 
 typedef struct node {
     elemType head;
@@ -99,10 +99,53 @@ int insertList(listADT list, elemType elem) {
     return flag;
 }
 
+static List
+deleteRec(List list, elemType elem, compare cmp, int *flag){
+    int c;
+    if (list==NULL || (c=cmp(list->head, elem))>0){
+        return list;
+    }
+
+    if (c==0){
+        List aux=list->tail;
+        *flag=1;
+        free(list);
+        return aux;
+    }
+
+    list->tail=deleteRec(list->tail,elem,cmp,flag);
+    return list;
+}
+
 int deleteList(listADT list, elemType elem) {
-    return 0;
+    int flag=0;
+    list->first=deleteRec(list->first, elem, list->cmp, &flag);
+    list->size -= flag;
+    return flag;
 }
 
 int sizeList(const listADT list) {
     return list->size;
+}
+
+elemType 
+buscar (const listADT list, int indice){
+    List aux=list->first;
+    int i;
+
+    for (i=0 ; aux!=NULL && i<indice ; i++, aux=aux->tail);
+
+    if (aux==NULL){
+        exit(1);
+    }
+
+    return aux->head;
+}
+
+void map(const listADT list, elemType (*funcion) (elemType)){
+    List aux=list->first;
+    while (aux!=NULL){
+        aux->head=funcion(aux->head);
+        aux=aux->tail;
+    }
 }

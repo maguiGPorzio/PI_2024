@@ -1,7 +1,7 @@
 //
 // Created on 21/05/2024.
 //
-#include "stackADT.h"
+#include "/home/mgonzalezporzio/PI/TADStack/stackADT.h"
 #include <stdlib.h>
 
 struct node {
@@ -49,7 +49,8 @@ void push(stackADT stack, elemType elem) {
     stack->dim++;
 }
 
-elemType pop(stackADT stack) {
+elemType 
+pop(stackADT stack) {
     if (isEmpty(stack)) {
         exit(1);
     }
