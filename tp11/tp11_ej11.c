@@ -9,7 +9,7 @@ struct vectorCDT {
     size_t dim; //la cantidad de elemntos totales
     size_t size; //la cantidad de memoria reservada
     size_t elements; //cantidad de elementos que no son nulos
-    compares cmp; //la funcion para comparar 
+    compares cmp; //la funcion para comparar
 };
 
 /* Crea un nuevo vector dinámico de elementos genéricos
@@ -72,6 +72,7 @@ put(vectorADT v, elemType * elems, size_t dim, size_t index){
             v->vec[i]=NULL;
         }
     }
+   
     v->dim=v->size;
     v->elements+=elemAgreg;
 
