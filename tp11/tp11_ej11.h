@@ -5,7 +5,9 @@
 
 typedef struct vectorCDT * vectorADT;
 
-typedef  int elemType; // Tipo de elemento a insertar
+typedef int elemType; // Tipo de elemento a insertar
+
+typedef int (*compares) (elemType e1, elemType e2);
 
 /* Crea un nuevo vector dinámico de elementos genéricos
 ** Inicialmente el vector está vacío

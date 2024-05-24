@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
-#include "tp11_ej10.h" 
+#include "/home/mgonzalezporzio/PI/tp11/tp11_ej10.h" 
 #include <strings.h>
 
 // Utilizamos char * como elemType y strcasemp como compare

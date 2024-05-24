@@ -48,7 +48,7 @@ int addElement(setADT set, elemType element){
     set->vec[set->dim++]=element;
     return 1;
 }
-
+ //esta funcion esta mla, como no tienen orden deberia hacer un cambio y poner el ultimo elemento en la posicion del elemento que elimine (en el ej 10 lo hago)
 int deleteElement(setADT set, elemType element){
     int esta=0, j=0;
     
