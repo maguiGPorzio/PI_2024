@@ -2,7 +2,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
-#include "rankingADT.h"
+#include "/home/mgonzalezporzio/PI/tp11/rankingADT.h"
 
 // Utilizamos char * como elemType y strcmp como compare
 int main(void) {

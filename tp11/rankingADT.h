@@ -7,6 +7,8 @@ typedef struct rankingCDT * rankingADT;
 
 typedef int (*compare)(elemType source, elemType target);
 
+typedef unsigned long size_t;
+
 /* Crea un nuevo ranking. Recibe un vector con elementos, donde el primer
 ** elemento (elems[0]) está al tope del ranking (puesto 1), elems[1] en el 
 ** puesto 2, etc. Si dim es cero significa que no hay elementos iniciales
