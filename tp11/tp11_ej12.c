@@ -21,11 +21,11 @@ typedef struct persona{
 typedef persona * personas; 
 
 struct socialCDT{
-    personas per; //per es la direccion de memoria a la info del primer nombre 
+    personas per; //per es la direccion de memoria a la info del primer nombre
     size_t cantPer;
 };
 
-char * strncpyAux(char * t, const char * s, unsigned int n) {
+char * strncpyAux(char * t, const char * s, unsigned int n) { //la volvi a hacer porq la que te da la libreria de c puede no ponerte la marca final
     // Siempre se copian n caracteres, ya sean de s o 0 para rellenar
     int i;
     for(i=0; i<n-1; i++) {

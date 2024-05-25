@@ -58,19 +58,22 @@ put(vectorADT v, elemType * elems, size_t dim, size_t index){
         v->vec=realloc(v->vec,v->size * sizeof(v->vec[0]));
     }
 
-    size_t j=0;
-    size_t elemAgreg=0;
-    for (int i=0 ; i<index+dim ; i++){
-        if (i>=index){
-            if (v->vec[i] == NULL || i >= v->dim){
-                v->vec[i]=elems + j;
-                elemAgreg++;
-            }
-            j++;
-        }
-        else if (i >= v->dim){
+    int i=0;
+    while (i<index){
+        if (i >= v->dim){
             v->vec[i]=NULL;
         }
+        i++;
+    }
+
+    size_t j=0;
+    size_t elemAgreg=0;
+    for (; i<index+dim ; i++){
+        if (v->vec[i] == NULL || i >= v->dim){
+            v->vec[i]=elems + j;
+            elemAgreg++;
+        }
+        j++;
     }
    
     v->dim=v->size;
