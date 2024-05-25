@@ -18,13 +18,27 @@ typedef struct persona{
     struct persona * proxPers;
 }persona;
 
-typedef persona * personas;
+typedef persona * personas; 
 
 struct socialCDT{
     personas per; //per es la direccion de memoria a la info del primer nombre 
     size_t cantPer;
 };
-`
+
+char * strncpyAux(char * t, const char * s, unsigned int n) {
+    // Siempre se copian n caracteres, ya sean de s o 0 para rellenar
+    int i;
+    for(i=0; i<n-1; i++) {
+        if (*s) {
+            t[i] = *s++;
+        } else {
+            t[i] = 0;
+        }
+    }
+    t[i]=0;
+    return t;
+}
+
 /* Crea un nuevo TAD vacío */
 socialADT newSocial(){
     socialADT aux=calloc(1,sizeof(struct socialCDT));
@@ -36,19 +50,24 @@ freeAlleg(allegados all){
     if (all == NULL){
         return;
     }
-    freeAlleg(all->proxAl);
+    
+    allegados aux=all->proxAl;
+    free(all->nombre);
     free(all);
+    freeAlleg(aux);
 }
 
 static void
 freePer (personas per){
-    if (per == NULL){
+    if (per==NULL){
         return;
     }
 
-    freePer(per->proxPers);
+    personas aux=per->proxPers;
     freeAlleg(per->alleg);
+    free(per->nombre);
     free(per);
+    freePer(aux);
     
 }
  
@@ -59,12 +78,12 @@ void freeSocial(socialADT soc){
 }
 
 static personas
-addPersonRec(personas per, const char * name, int * esta){
-    if ( per==NULL || strcmp(per->nombre, name) > 0 ){
-        *esta=1;
+addPersonRec(personas per, const char * name, int * noRepetida){
+    if (per==NULL || strcmp(per->nombre, name) > 0 ){
+        *noRepetida=1;
         personas nuevaPersona=calloc(1, sizeof(persona));
         nuevaPersona->nombre=malloc(21*sizeof(nuevaPersona->nombre[0]));
-        strncpy(nuevaPersona->nombre, name, 21);
+        strncpyAux(nuevaPersona->nombre, name, 21);
         nuevaPersona->proxPers=per;
         return nuevaPersona;
     }
@@ -72,25 +91,26 @@ addPersonRec(personas per, const char * name, int * esta){
     if (!strcmp(per->nombre, name)){
         return per;
     }
-    per->proxPers=addPersonRec(per->proxPers,name,esta);
+
+    per->proxPers=addPersonRec(per->proxPers,name,noRepetida);
     return per;
 }
- 
+
 /* Almacena una nueva persona. Si la persona existe, no hace nada
 ** Guarda una copia del nombre, no simplemente el puntero
 */
 void addPerson(socialADT soc, const char * name){
-    int esta=0;
-    soc->per=addPersonRec(soc->per, name, &esta);
-    soc->cantPer+=esta;
+    int noRepetida=0;
+    soc->per=addPersonRec(soc->per, name, &noRepetida);
+    soc->cantPer+=noRepetida;
 }
 
 static allegados
 addRelatedRec(allegados all, const char * related){
     if (all==NULL || !strcmp(all->nombre, related) || strcmp(all->nombre, related) > 0 ){
-        allegados nuevoAll=calloc(1, sizeof(struct socialCDT));
-        nuevoAll->nombre=malloc(20*sizeof(nuevoAll->nombre[0]));
-        strncpy(nuevoAll->nombre, related, 20);
+        allegados nuevoAll=calloc(1, sizeof(allegado));
+        nuevoAll->nombre=malloc(21*sizeof(nuevoAll->nombre[0]));
+        strncpyAux(nuevoAll->nombre, related, 21); 
         nuevoAll->proxAl=all;
         return nuevoAll;
     }
@@ -117,17 +137,20 @@ void addRelated(socialADT soc, const char * name, const char * related){
     }
 }
 
-static void 
-relatedAux(personas per, char ** relat){
+char ** 
+relatedAux(personas per){
+    char ** nombresRelac=malloc((per->cantAll+1) * sizeof(nombresRelac[0]));
     allegados aux=per->alleg;
     int i=0;
 
     while (aux != NULL){
-        relat[i]=malloc(20 * sizeof(char));
-        strcpy(relat[i],aux->nombre);
+        nombresRelac[i]=malloc(21 * sizeof(nombresRelac[0][0]));
+        strcpy(nombresRelac[i++],aux->nombre);
         aux=aux->proxAl;
     }
-    relat[i]=NULL;
+
+    nombresRelac[i]=NULL;
+    return nombresRelac;
 }
 
 /* Retorna una copia de los nombres relacionados con una persona
@@ -136,21 +159,18 @@ relatedAux(personas per, char ** relat){
 ** Si la persona no existe, retorna un vector que sólo tiene a NULL como 
 ** elemento
  */
-char ** related(const socialADT soc, const char * person){
-    char ** nombresAllegados=NULL;
+char ** 
+related(const socialADT soc, const char * person){
     personas aux=soc->per;
 
-    while (aux != NULL && strcmp(aux->nombre,person) > 0){
+    while (aux != NULL && strcmp(aux->nombre,person)<=0){
         if (!strcmp(aux->nombre,person)){
-            nombresAllegados=malloc((aux->cantAll+1) * sizeof(char *));
-            relatedAux(aux,nombresAllegados);
-            nombresAllegados[aux->cantAll]=NULL;
-            return nombresAllegados;
+            return relatedAux(aux);
         }
+        aux=aux->proxPers;
     }
 
-
-    nombresAllegados=malloc(sizeof(char *));
+    char ** nombresAllegados=malloc(sizeof(nombresAllegados[0]));
     nombresAllegados[0]=NULL;
     return nombresAllegados;
 }
@@ -163,8 +183,8 @@ char ** related(const socialADT soc, const char * person){
 char ** 
 persons(const socialADT soc){
     char ** pers;
-    if (soc->per == 0){
-        pers=malloc(sizeof(char *));
+    if (soc->cantPer == 0){
+        pers=malloc(sizeof(pers[0]));
         pers[0]=NULL;
         return pers;
     }
@@ -174,9 +194,10 @@ persons(const socialADT soc){
     int i=0;
 
     while (aux != NULL){
-        pers[i]=malloc(20 * sizeof(char));
+        pers[i]=malloc(21 * sizeof(char));
         strcpy(pers[i],aux->nombre);
         aux=aux->proxPers;
+        i++;
     }
     pers[i]=NULL;
     return pers;
