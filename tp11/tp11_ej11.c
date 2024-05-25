@@ -6,7 +6,7 @@
 
 /*
 no está bien, porque no guarda el elemento sino que hace referencia a un vector externo. Si después el front pisa los datos de ese vector, 
-está cambiando los datos que supuestamente se guardaron en el TAD
+está cambiando los datos que supuestamente se guardaron en el TAD (esto era para la version anterior, YA LO ARREGLE)SS
 */
 
 struct vectorCDT {
