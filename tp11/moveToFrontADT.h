@@ -3,7 +3,12 @@
 
 typedef struct moveToFrontCDT * moveToFrontADT;
  
-typedef ... elemType;  	// Tipo de elemento a insertar
+//typedef ... elemType;  	// Tipo de elemento a insertar
+
+typedef struct {
+    int code;
+    char name[20];
+} elemType;  
  
 /*
 ** Retorna 0 si los elementos son iguales, negativo si e1 es "menor" que e2 y positivo 

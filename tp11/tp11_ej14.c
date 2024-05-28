@@ -1,6 +1,8 @@
 /*
 Se desea implementar un TAD para listas de elementos no repetidos, que permita recorrerla con dos criterios: 
 en forma ascendente o por el orden de inserción de los elementos.
+
+YA SE LO MOSTRE A MARCELO ESTA 10 PUNTOS
 */
 
 #define BLOCK 10
@@ -42,13 +44,13 @@ addAux(elemType elem){
 }
 
 static Tlist
-addRec(Tlist lista, listADT listas, elemType elem){
+addRec(Tlist lista, listADT listas, elemType elem, int * agrego){
 
-    if (lista == NULL || listas->cmp(lista->head,elem) > 0){
-        Tlist auxIns=addAux(elem);
-        auxIns->head=elem;
-        listas->ultimoAgregado->tail=auxIns;
-        listas->ultimoAgregado=auxIns;
+    int c;
+
+    if (lista == NULL || (c=listas->cmp(lista->head,elem)) > 0){
+
+        *agrego=1;
 
         Tlist auxAsc=addAux(elem);
         auxAsc->head=elem;
@@ -56,17 +58,19 @@ addRec(Tlist lista, listADT listas, elemType elem){
         return auxAsc;
     }
 
-    if (!listas->cmp(lista->head,elem)){
+    if (!c){
         return lista;
     }
 
-    lista->tail=addRec(lista->tail,listas,elem);
+    lista->tail=addRec(lista->tail,listas,elem, agrego);
     return lista;
 
 }
 
 /* Agrega un elemento. Si ya estaba no lo agrega */
 void add(listADT list, elemType elem){
+
+    int agrego=0;
 
     if (list->listaAsc == NULL){
         list->listaAsc=addAux(elem);
@@ -75,7 +79,14 @@ void add(listADT list, elemType elem){
         return;
     }
 
-    list->listaAsc=addRec(list->listaAsc, list, elem);
+    list->listaAsc=addRec(list->listaAsc, list, elem,&agrego);
+
+    if (agrego){
+        Tlist auxIns=addAux(elem);
+        auxIns->head=elem;
+        list->ultimoAgregado->tail=auxIns;
+        list->ultimoAgregado=auxIns;
+    }
 }
 
 /* Elimina un elemento. */
