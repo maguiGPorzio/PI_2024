@@ -23,6 +23,21 @@ int main(void) {
 
     //assert(strcasecmp(buscar(myList,0),"hola")==0);
 
+    // Otra forma de imprimir todos, pero mas eficiente
+    toBegin(myList);
+    while (hasNext(myList)) {
+        printf("%s\n", next(myList));
+    }
+    // Si hago next(myList) aborta
+
+    insertList(myList, "ZZZZZ");
+    toBegin(myList);
+    int i=1;
+    // Imprimo solo los tres primeros
+    while (hasNext(myList) && i++<=3) {
+        printf("%s\n", next(myList));
+    }
+
     freeList(myList);
 
     puts("OK");

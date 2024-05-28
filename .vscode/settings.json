@@ -18,6 +18,7 @@
         "strings.h": "c",
         "tp11_ej08.h": "c",
         "tp11_ej11.h": "c",
-        "tp11_ej12.h": "c"
+        "tp11_ej12.h": "c",
+        "tp11_ej14.h": "c"
     }
 }

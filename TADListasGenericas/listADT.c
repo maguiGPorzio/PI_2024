@@ -1,7 +1,7 @@
 //
 // Created on 22/05/2024.
 //
-
+#include <stdio.h>
 #include <stdlib.h>
 #include "/home/mgonzalezporzio/PI/TADListasGenericas/listADT.h"
 
@@ -16,6 +16,7 @@ struct listCDT {
     List first;
     size_t size;
     compare cmp;
+    List next;
 };
 
 listADT newList(compare cmp) {
@@ -128,6 +129,40 @@ int sizeList(const listADT list) {
     return list->size;
 }
 
+//función map, que reciba un puntero a función que permita modificar cada elemento de la misma.
+void map(const listADT list, elemType (*funcion) (elemType)){
+    List aux=list->first;
+    while (aux!=NULL){
+        aux->head=funcion(aux->head);
+        aux=aux->tail;
+    }
+}
+
+void toBegin(listADT list) {
+    list->next = list->first;
+}
+
+/* Le devuelve al usuario el siguiente.
+ * La primer llamada posterior a toBegin retorna el primer elemento
+ */
+elemType next(listADT list) {
+    if (!hasNext(list)) {
+        exit(1);
+    }
+    elemType ans = list->next->head;
+    list->next = list->next->tail;
+    return ans;
+}
+
+/* retorna 1 si hay un elemento siguiente (nse puede llamar a next)
+ * 0 si no hay elemento siguiente (si el usuario llama a next, aborta
+ */
+int hasNext(listADT list) {
+    return list->next != NULL;
+}
+
+
+//función que reciba un número entero i y devuelve el i-ésimo elemento, donde el primer elemento tiene el índice cero.
 elemType 
 buscar (const listADT list, int indice){
     List aux=list->first;
@@ -140,12 +175,4 @@ buscar (const listADT list, int indice){
     }
 
     return aux->head;
-}
-
-void map(const listADT list, elemType (*funcion) (elemType)){
-    List aux=list->first;
-    while (aux!=NULL){
-        aux->head=funcion(aux->head);
-        aux=aux->tail;
-    }
 }

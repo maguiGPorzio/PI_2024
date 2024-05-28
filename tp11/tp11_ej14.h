@@ -6,6 +6,8 @@ typedef struct listCDT * listADT;
  
 typedef int elemType;  	// Tipo de elemento a insertar, por defecto int
 
+typedef int (*compares) (elemType e1, elemType e2);
+
  
 /* Retorna una lista vacía.
 */

@@ -1,4 +1,4 @@
-#include "tp11_ej14.h"
+#include "/home/mgonzalezporzio/PI/tp11/tp11_ej14.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

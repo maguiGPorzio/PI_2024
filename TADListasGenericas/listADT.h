@@ -42,4 +42,21 @@ elemType buscar (const listADT list, int indice);
 
 void map(const listADT list, elemType (*funcion) (elemType));
 
+//////////////////////////////
+// Implementamos un iterador para recorrer la lista en forma eficiente
+
+/** El usuario avisa que va a recorrer la lista */
+void toBegin(listADT list);
+
+/* Le devuelve al usuario el siguiente.
+ * La primer llamada posterior a toBegin retorna el primer elemento
+ * Si no hay uno isguiente, aborta
+ */
+elemType next(listADT list);
+
+/* retorna 1 si hay un elemento siguiente (nse puede llamar a next)
+ * 0 si no hay elemento siguiente (si el usuario llama a next, aborta
+ */
+int hasNext(listADT list);
+
 #endif //UNTITLED6_LISTADT_H
