@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "phrasesADT.h"
+#include "/home/mgonzalezporzio/PI/tp11/phrasesADT.h"
 #include <assert.h>
 
 int main(void) {

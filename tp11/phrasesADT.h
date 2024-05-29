@@ -3,6 +3,8 @@
 
 typedef struct phrasesCDT * phrasesADT;
 
+typedef char * elemType;
+
 /*
 * Recibe cuál será el rango de claves válidas a utilizar, por ejemplo si
 * keyFrom=1001, keyTo=1500 habrá un máximo de 500 frases a almacenar
