@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "/home/mgonzalezporzio/PI/dictADT.h"
+#include "dictADT.h"
 #include <string.h>
 #include <assert.h>
 
@@ -18,7 +18,7 @@ int main(void) {
     assert(strcmp(w[1],"Casona" )==0);
     assert(w[2]==NULL);
 
-    Liberar w[0], w[1], w
+    // Liberar w[0], w[1], w
 
     puts("OK");
     return 0;
