@@ -60,6 +60,4 @@ reemplazo(int matriz[][MAX], int dim, int fil, int col){
    }
 
    matriz[fil][col]=!matriz[fil][col];
-
-
 }
