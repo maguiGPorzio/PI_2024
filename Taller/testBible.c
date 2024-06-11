@@ -2,8 +2,8 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "bibleADT.h"
-
+#include "/home/mgonzalezporzio/PI/Taller/bibleADT.h"
+ 
 int
 main(void) {
     bibleADT b = newBible();

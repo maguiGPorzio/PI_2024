@@ -1,11 +1,11 @@
 
 
-#include "/home/mgonzalezporzio/PI/bibleADT.h"
+#include "/home/mgonzalezporzio/PI/Taller/bibleADT.h"
 #include <stdlib.h>
 #include <string.h>
 #define BLOCK 10
 #define AMOUNT_BOOKS 76
-#define BOOK_NBR_IN_RANGE(M) ((M)>0 && (M)<77)
+#define BOOK_NBR_IN_RANGE(M) ((M)>0 && (M)<AMOUNT_BOOKS+1)
 
 typedef struct {
     char * verse;
@@ -26,7 +26,7 @@ bibleADT newBible(){
     return newBib;
 }
 
-char *
+static char *
 copyVerse(const char * verse, size_t * j){
     char * newVerse=NULL;
     int i=0;
