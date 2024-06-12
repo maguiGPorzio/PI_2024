@@ -22,6 +22,7 @@
         "tp11_ej14.h": "c",
         "dictadt.h": "c",
         "polyadt.h": "c",
-        "bibleadt.h": "c"
+        "bibleadt.h": "c",
+        "hangmanadt.h": "c"
     }
 }
