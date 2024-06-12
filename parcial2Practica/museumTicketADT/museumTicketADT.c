@@ -35,7 +35,7 @@ struct day{
 };
 
 struct museumTicketCDT{
-    struct day * days;
+    struct day * days; //aca deberia haber usado un vector estatico porque son 366 dias 
     size_t totalTicketsSold;
 };
 
