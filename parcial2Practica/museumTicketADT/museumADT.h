@@ -1,6 +1,5 @@
-
-
 typedef struct museumTicketCDT * museumTicketADT;
+typedef unsigned long int size_t;
 
 /**
  * Reserva los recursos para administrar las ventas de tickets para visitar un museo en

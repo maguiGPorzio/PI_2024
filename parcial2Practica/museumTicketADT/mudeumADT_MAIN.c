@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
-#include "/home/mgonzalezporzio/PI/museumTicketADT.h"
+#include "/home/mgonzalezporzio/PI/museumADT.h"
 #include <string.h>
 
 int
